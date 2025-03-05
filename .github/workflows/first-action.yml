@@ -1,0 +1,13 @@
+name: First Workflow
+on: workflow_dispatch
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initiate
+        run: echo "Initiating ${ github.workflow }"
+      - name: Close
+        run: echo "Closing ${ github.workflow }"
+      - name: End
+        run: echo "End ${ github.workflow} "
+  
