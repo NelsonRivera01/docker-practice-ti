@@ -1,0 +1,15 @@
+name: on-issue-opened
+on:
+    issues:
+        types: [opened]
+
+jobs:
+    issue-opened:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Display event details
+              run: | 
+                echo "Issue opened by ${{ github.actor}}"
+                echo "Issue titled: ${{ github.event.issue.title}}"
+                echo "Assigned to: ${{github.event.issue.assignee}}"
+                echo "Contents: ${{github.event.issue.body}}"
