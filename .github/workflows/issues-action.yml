@@ -11,5 +11,9 @@ jobs:
               run: | 
                 echo "Issue opened by ${{ github.actor}}"
                 echo "Issue titled: ${{ github.event.issue.title}}"
-                echo "Assigned to: ${{github.event.issue.assignee.name}}"
-                echo "Contents: ${{github.event.issue.body}}"
+                ASSIGNEE="${{github.event.issue.assignee.login}}"
+                if [ ! -z "$ASSIGNEE" ]; then
+                    echo "Issue assigned to $ASSIGNEE"
+                else
+                    echo "Issue not assigned"
+                fi
