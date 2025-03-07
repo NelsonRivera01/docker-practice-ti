@@ -11,5 +11,5 @@ jobs:
               run: | 
                 echo "Issue opened by ${{ github.actor}}"
                 echo "Issue titled: ${{ github.event.issue.title}}"
-                echo "Assigned to: ${{github.event.issue.assignee}}"
+                echo "Assigned to: ${{github.event.issue.assignee.name}}"
                 echo "Contents: ${{github.event.issue.body}}"
