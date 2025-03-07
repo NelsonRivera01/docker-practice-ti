@@ -1,7 +1,7 @@
 name: Deploy 
 on: push
 jobs:
-  test-push:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Download repo
@@ -11,6 +11,7 @@ jobs:
       - name: run tests 
         run: npm run test 
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Download repo
