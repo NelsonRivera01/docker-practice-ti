@@ -21,6 +21,9 @@ jobs:
       - name: build project
         run: npm run build
       - name: deploy project
-        run: echo "Deploying... c:"
+        run: |
+          echo "Deploying... c:"
+          echo "${{ github.actor }}"
+
 
 
