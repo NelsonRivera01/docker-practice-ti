@@ -40,6 +40,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
+      - name: list files
+        run: ls
       - name: deploy
         run: echo "Deploying to production c:"
 
