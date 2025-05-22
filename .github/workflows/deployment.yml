@@ -25,6 +25,8 @@ jobs:
         run: npm ci
       - name: build project
         run: npm run build
+      - name: list workspace
+        run: ls -R
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
