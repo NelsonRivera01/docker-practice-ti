@@ -18,6 +18,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      icoName: ${{ steps.icoStep.outputs.ico }}
     steps:
       - name: Download repo
         uses: actions/checkout@v3
@@ -25,6 +27,9 @@ jobs:
         run: npm ci
       - name: build project
         run: npm run build
+      - name: Publish icon file name
+        id: icoStep
+        run: find build/*.ico -type f -execdir echo 'ico={}' >> $GITHUB_OUTPUT ';'
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -42,6 +47,8 @@ jobs:
           name: build
       - name: list files
         run: ls
+      - name: print icon name
+        run: echo "${{ needs.build.outputs.icoName }}"
       - name: deploy
         run: echo "Deploying to production c:"
 
