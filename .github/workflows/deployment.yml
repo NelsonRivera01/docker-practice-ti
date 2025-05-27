@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: Download repo
         uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
       - name: run tests 
@@ -23,8 +28,18 @@ jobs:
     steps:
       - name: Download repo
         uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: build project
         run: npm run build
       - name: Publish icon file name
