@@ -6,7 +6,8 @@ on:
 
   workflow_dispatch:
 env:
-  MY_ENV_VAR: 'environment practice'
+  SECRET_ENV_VAR: ${{ secrets.PRACTICE_SECRET }}
+  MY_ENV_VAR: 'environment variable value'
 jobs:
   test:
     runs-on: ubuntu-latest
