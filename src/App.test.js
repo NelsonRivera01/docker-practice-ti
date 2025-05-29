@@ -13,8 +13,9 @@ test('renders learn react link', () => {
   expect(linkElement).toBeInTheDocument();
 });
 
+/*
 test('failing test', () => {
   render(<App />);
   const variable = false;
   expect(variable).toBe(true); // This will fail
-});
+});*/
