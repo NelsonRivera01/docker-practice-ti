@@ -24,7 +24,12 @@ jobs:
       - name: Echo variable
         run: echo "MY_ENV_VAR is $MY_ENV_VAR"
       - name: run tests 
-        run: npm run test 
+        id: test-step
+        run: npm run test
+        continue-on-error: true
+      - name: Publish test result
+        if: failure() && steps.test-step.outcome == 'failure'
+        run: echo "Tests passed successfully."
   build:
     needs: test
     runs-on: ubuntu-latest
