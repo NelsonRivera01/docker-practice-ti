@@ -26,7 +26,7 @@ jobs:
       - name: run tests 
         id: test-step
         run: npm run test
-        continue-on-error: true
+        continue-on-error: false
       - name: Publish test result
         if: failure() && steps.test-step.outcome == 'failure'
         run: echo "Tests passed successfully."
