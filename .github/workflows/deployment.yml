@@ -29,7 +29,7 @@ jobs:
         continue-on-error: false
       - name: Publish test result
         if: failure() && steps.test-step.outcome == 'failure'
-        run: echo "Tests passed successfully."
+        run: echo "Tests Failed"
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -76,5 +76,13 @@ jobs:
         run: echo "${{ needs.build.outputs.icoName }}"
       - name: deploy
         run: echo "Deploying to production c:"
-
+  Failure:
+    needs: [test, build, deploy]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify failure
+        run: echo "Deployment failed, please check the logs."
+      - name: Send notification
+        run: echo "Sending notification about failure"        
 
