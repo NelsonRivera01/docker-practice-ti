@@ -64,7 +64,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    environment: dv
+    environment: prod
     steps:
       - name: Getting Environment 
         run: echo "running on ${{ env.ENV_KEY }}"
