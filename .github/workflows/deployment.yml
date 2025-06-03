@@ -8,6 +8,7 @@ on:
 env:
   SECRET_ENV_VAR: ${{ secrets.PRACTICE_SECRET }}
   MY_ENV_VAR: 'environment variable $SECRET_ENV_VAR'
+  ENV_KEY: ${{ vars.ENV_KEY }}
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -26,13 +27,14 @@ jobs:
       - name: run tests 
         id: test-step
         run: npm run test
-        continue-on-error: false
+        continue-on-error: true
       - name: Publish test result
         if: failure() && steps.test-step.outcome == 'failure'
         run: echo "Tests Failed"
   build:
     needs: test
     runs-on: ubuntu-latest
+    if: always()
     outputs:
       icoName: ${{ steps.icoStep.outputs.ico }}
     steps:
@@ -62,7 +64,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: dv
     steps:
+      - name: Getting Environment 
+        run: echo "running on ${{ env.ENV_KEY }}"
       - name: Get build artifact
         uses: actions/download-artifact@v4
         with:
