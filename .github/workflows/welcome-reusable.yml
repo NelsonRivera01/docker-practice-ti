@@ -1,0 +1,15 @@
+name: Welcome User
+on:
+    workflow_call:
+        inputs:
+            name_of_job:
+                description: 'Name of the job to run'
+                required: true
+                type: string
+jobs:
+    welcome-job:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Welcome User
+            run: |
+              echo "Welcome to the job excecution of: ${{ inputs.name_of_job }}"

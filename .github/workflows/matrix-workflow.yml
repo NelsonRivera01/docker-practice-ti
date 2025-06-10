@@ -1,11 +1,13 @@
-name: Matrix Demo
+name: Matrix Demo with reusable workflow
 on:
     push:
         branches:
             - master
-env:
-    CURRENT_NODE-VERSION: 
 jobs:
+    welcome:
+        uses: ./.github/workflows/welcome-reusable.yml
+        with:
+            name_of_job: 'Matrix Demo Job'
     build:
         continue-on-error: true
         strategy:
