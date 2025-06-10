@@ -3,12 +3,16 @@ on:
     push:
         branches:
             - master
+env:
+    CURRENT_NODE-VERSION: 
 jobs:
     build:
         continue-on-error: true
         strategy:
             matrix:
                 node-version: [14, 18]
+        outputs:
+            current-node-version: ${{ steps.node-version.outputs.current-node-version }}
         runs-on: ubuntu-latest
         steps:
           - name: Get Code
@@ -21,3 +25,18 @@ jobs:
             run: npm install
           - name: Build Project
             run: npm run build
+          - name: upload artifact
+            uses: actions/upload-artifact@v4
+            with:
+              name: build-node-${{ matrix.node-version }}
+              path: build
+          - name: Output node version
+            id: node-version
+            run: echo "current-node-version=${{ matrix.node-version }}" >> $GITHUB_OUTPUT
+              
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          - name: deploy node version
+            run: echo "Deploying with node version ${{ needs.build.outputs.current-node-version }}"
