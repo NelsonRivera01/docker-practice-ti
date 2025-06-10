@@ -9,6 +9,7 @@ jobs:
         with:
             name_of_job: 'Matrix Demo Job'
     build:
+        needs: welcome
         continue-on-error: true
         strategy:
             matrix:
