@@ -33,10 +33,10 @@ jobs:
                     https://api.reflect.run/v1/suites/"${{ inputs.suite }}"/executions)
 
                    execution=$(echo "$response" | jq -r '.executionId // "undefined"')
-                   run_url=$(echo "response | jq -r '.url // "undefined'")
+                   run_url=$(echo "$response" | jq -r '.url // "undefined'")
 
                    if [ "$execution" = "undefined" ]; then
-                    echo "❌ Failed to trigger Test Suite"
+                    echo "Failed to trigger Test Suite"
                     echo "  No executionId returned by api call"
                     echo "  Response: $response"
                     exit 1
@@ -69,17 +69,17 @@ jobs:
                     finished=$(echo "$response" | jq -r '.isFinished')
                     status=$(echo "$response" | jq -r '.status // "pending"')
 
-                    echo "🗒️ Execution Status:"
+                    echo "Execution Status:"
                     echo "  Has finished: $finished"
                     echo "  Run status: $status"
 
                     if [ "$finished" = "true" ]; then
                         if [ "$status" = "passed" ]; then
-                            echo "✅ All tests passed"
+                            echo "All tests passed"
                             echo "  Visit run summary for more details $run_url"
                             exit 0
                         else
-                            echo "⚠️ Test failure encountered"
+                            echo "Test failure encountered"
                             echo "  Visit run summary for more details $run_url"
                             exit 1
                         fi 
@@ -109,8 +109,8 @@ jobs:
                 echo "  *Verify suite id ${{inputs.suite}} is correct" >> $GITHUB_STEP_SUMMARY
                 fi
 
-                echo "###Execution Result" >> $GITHUB_STEP_SUMMARY
-                echo "**Status* ${{ needs.check-suite-status.result }}*" >> $GITHUB_STEP_SUMMARY
+                echo "### Execution Result" >> $GITHUB_STEP_SUMMARY
+                echo "**Status** ${{ needs.check-suite-status.result }}*" >> $GITHUB_STEP_SUMMARY
                 if [[ "${{ needs.check-suite-status.result }}" == "failure" ]]; then
                 echo "⚠️ One or more tests failed during execution" >> 
                 echo "  *Please verify Reflect test run for more details: ${{ needs.trigger-suite.outputs.run-url }}"
