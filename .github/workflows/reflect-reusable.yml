@@ -33,7 +33,7 @@ jobs:
                     https://api.reflect.run/v1/suites/"${{ inputs.suite }}"/executions)
 
                    execution=$(echo "$response" | jq -r '.executionId // "undefined"')
-                   run_url=$(echo "$response" | jq -r '.url // "undefined'")
+                   run_url=$(echo "$response" | jq -r '.url // "undefined"')
 
                    if [ "$execution" = "undefined" ]; then
                     echo "Failed to trigger Test Suite"
