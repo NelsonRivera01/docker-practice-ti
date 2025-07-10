@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       retries:
-       description: "retries"
+       description: "Retries (1 = 5 minutes)"
        required: false
        type: string
        default: "3"
