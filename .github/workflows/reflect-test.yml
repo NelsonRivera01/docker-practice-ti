@@ -1,0 +1,21 @@
+name: Reflect Test
+on: 
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Test Suite ID"
+        required: true
+        type: string
+      retries:
+       description: "retries"
+       required: false
+       type: string
+       default: "3"
+jobs:
+  call-reusable-workflow:
+    secrets: inherit
+    uses: ./.github/workflows/reflect-reusable.yml
+    with:
+      suite: ${{ inputs.suite }}
+      retries: ${{ inputs.retries }}
+    
