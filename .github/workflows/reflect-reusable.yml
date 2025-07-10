@@ -1,0 +1,85 @@
+name: Reflect Automated Tests
+on:
+    workflow_call:
+        inputs:
+            suite:
+                description: "Test Suite ID"
+                required: true
+                type: string
+            retries:
+                description: "How many times suite will be checked for completion 1 = 5 minutes"
+                required: false
+                type: string
+                default: "3"
+jobs:
+    trigger-suite:
+        runs-on: ubuntu-latest
+        outputs:
+            execution-id: ${{ steps.reflect-call.outputs.execution }}
+        env:
+            PAYLOAD: "{ \"gitHub\": { \"owner\": \"${{ github.repository_owner }}\", \"repo\": \"${{ github.event.repository.name }}\", \"sha\": \"${{ github.sha }}\" } }"
+        steps:
+            - name: Call Reflect Test Suite
+              id: reflect-call
+              run: |
+                   response=$(
+                    curl -X POST \
+                    -H "X-API-Key: ${{ secrets.REFLECT_API_KEY }}" \
+                    -H "Content-Type: application/json" \
+                    -d "$PAYLOAD" \
+                    -s \
+                    https://api.reflect.run/v1/suites/"${{ inputs.suite }}"/executions)
+
+                   execution=$(echo "$response" | jq -r '.executionId // "undefined"')
+
+                   if [ "$execution" = "undefined" ]; then
+                    echo "no executionId returned by api call"
+                    exit 1
+                   else
+                    echo "execution=$execution" >> $GITHUB_OUTPUT
+                   fi
+    check-suite-status:
+        needs: trigger-suite
+        env:
+          RETRIES: "${{ inputs.retries }}"
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get Execution Result
+              run: |
+                   execution=${{ needs.trigger-suite.outputs.execution-id }}
+                   suite=${{ inputs.suite }}
+                   
+
+                   for ((i=1; i<=RETRIES; i++)); do
+                    
+
+                    response=$(
+                        curl -X GET \
+                        -H "X-API-Key: ${{ secrets.REFLECT_API_KEY }}" \
+                        -s \
+                        https://api.reflect.run/v1/suites/$suite/executions/$execution)
+
+                    finished=$(echo "$response" | jq -r '.isFinished // false')
+                    status=$(echo "$response" | jq -r '.status // "pending"')
+
+                    if [ "$finished" = "true" ]; then
+                        if [ "$status" = "passed" ]; then
+                            echo "all tests passed"
+                            exit 0
+                        else
+                            echo "Test failed $status"
+                            exit 1
+                        fi 
+                    else
+                        echo "waiting for tests to complete"
+                       
+                        sleep 300
+                    fi
+                   done
+
+                   exit 1
+                  
+  
+                    
+
+                   
