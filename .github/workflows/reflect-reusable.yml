@@ -48,9 +48,12 @@ jobs:
         needs: trigger-suite
         env:
           RETRIES: "${{ inputs.retries }}"
+        outputs:
+          timeout: ${{steps.execution-monitoring.outputs.timeout}}
         runs-on: ubuntu-latest
         steps:
             - name: Get Execution Result
+              id: execution-monitoring
               run: |
                    execution=${{ needs.trigger-suite.outputs.execution-id }}
                    run_url=${{ needs.trigger-suite.outputs.run-url }}
@@ -89,7 +92,8 @@ jobs:
                         sleep 300
                     fi
                    done
-
+                   
+                   echo "timeout=true" >> $GITHUB_OUTPUT
                    echo "Test execution didn't finish in the estimated time: $((RETRIES * 5)) Minutes"
                    exit 0
     workflow-summary:
@@ -113,5 +117,9 @@ jobs:
                 echo "**Status** ${{ needs.check-suite-status.result }}" >> $GITHUB_STEP_SUMMARY
                 if [[ "${{ needs.check-suite-status.result }}" == "failure" ]]; then
                 echo "⚠️ One or more tests failed during execution" >> $GITHUB_STEP_SUMMARY
-                echo "  Please verify Reflect test run for more details: ${{ needs.trigger-suite.outputs.run-url }}" >> $GITHUB_STEP_SUMMARY
                 fi
+                if [[ ${{ needs.check-suite-status.outputs.timeout }}  == "true" ]]; then
+                echo "⌛️ Test Suite Run did not finish under the set time interval ${{ inputs.retries }} * 5 minutes"
+                echo "Consider increasing the number of retries"
+                fi
+                echo "Please verify Reflect test run for more details: ${{ needs.trigger-suite.outputs.run-url }}" >> $GITHUB_STEP_SUMMARY
