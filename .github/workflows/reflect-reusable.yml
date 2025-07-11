@@ -80,11 +80,13 @@ jobs:
                         if [ "$status" = "passed" ]; then
                             echo "All tests passed"
                             echo "  Visit run summary for more details $run_url"
+                            timeout=false
                             echo "timeout=false" >> $GITHUB_OUTPUT
                             exit 0
                         else
                             echo "Test failure encountered"
                             echo "  Visit run summary for more details $run_url"
+                            timeout=false
                             echo "timeout=false" >> $GITHUB_OUTPUT
                             exit 1
                         fi 
@@ -94,8 +96,8 @@ jobs:
                         sleep 300
                     fi
                    done
-                   
-                   echo "timeout=true" >> $GITHUB_OUTPUT
+                   timeout=true
+                   echo "timeout=$timeout" >> $GITHUB_OUTPUT
                    echo "Test execution didn't finish in the estimated time: $((RETRIES * 5)) Minutes"
                    exit 0
     workflow-summary:
