@@ -123,7 +123,9 @@ jobs:
                 echo "⚠️ One or more tests failed during execution" >> $GITHUB_STEP_SUMMARY
                 fi
                 if [[ "${{ needs.check-suite-status.outputs.timeout }}"  == "true" ]]; then
-                echo "⌛️ Test Suite Run did not finish under the set time interval ${{ inputs.retries }} * 5 minutes" >> $GITHUB_STEP_SUMMARY
+                retries="${{ inputs.retries }}"
+                minutes=$((retries * 5))
+                echo "⌛️ Test Suite Run did not finish under the set time interval $minutes minutes" >> $GITHUB_STEP_SUMMARY
                 echo "Consider increasing the number of retries" >> $GITHUB_STEP_SUMMARY
                 fi
                 echo "Please verify Reflect test run for more details: ${{ needs.trigger-suite.outputs.run-url }}" >> $GITHUB_STEP_SUMMARY
