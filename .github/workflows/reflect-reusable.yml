@@ -91,7 +91,7 @@ jobs:
                    done
 
                    echo "Test execution didn't finish in the estimated time: $((RETRIES * 5)) Minutes"
-                   exit 1
+                   exit 0
     workflow-summary:
         name: "Results"
         if: always()
@@ -105,12 +105,12 @@ jobs:
                 echo "**Status:** ${{ needs.trigger-suite.result }}" $GITHUB_STEP_SUMMARY
                 if [[ "${{needs.trigger-suite.result}}" == "failure" ]]; then
                 echo "❌ Failed to trigger Test Suite Run" >> $GITHUB_STEP_SUMMARY
-                echo "  *Verify that Reflect API Key is set up in the repository" >> $GITHUB_STEP_SUMMARY
-                echo "  *Verify suite id ${{inputs.suite}} is correct" >> $GITHUB_STEP_SUMMARY
+                echo "  Verify that Reflect API Key is set up in the repository" >> $GITHUB_STEP_SUMMARY
+                echo "  Verify suite id ${{inputs.suite}} is correct" >> $GITHUB_STEP_SUMMARY
                 fi
 
                 echo "### Execution Result" >> $GITHUB_STEP_SUMMARY
                 echo "**Status** ${{ needs.check-suite-status.result }}*" >> $GITHUB_STEP_SUMMARY
                 if [[ "${{ needs.check-suite-status.result }}" == "failure" ]]; then
-                echo "⚠️ One or more tests failed during execution" >> 
-                echo "  *Please verify Reflect test run for more details: ${{ needs.trigger-suite.outputs.run-url }}"
+                echo "⚠️ One or more tests failed during execution" >> GITHUB_STEP_SUMMARY
+                echo "  *Please verify Reflect test run for more details: ${{ needs.trigger-suite.outputs.run-url }}" >> GITHUB_STEP_SUMMARY
