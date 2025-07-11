@@ -1,4 +1,4 @@
-name: Reflect Automated Tests 🧪
+name: Reflect Suite Call
 on:
     workflow_call:
         inputs:
@@ -80,10 +80,12 @@ jobs:
                         if [ "$status" = "passed" ]; then
                             echo "All tests passed"
                             echo "  Visit run summary for more details $run_url"
+                            echo "timeout=false" >> $GITHUB_OUTPUT
                             exit 0
                         else
                             echo "Test failure encountered"
                             echo "  Visit run summary for more details $run_url"
+                            echo "timeout=false" >> $GITHUB_OUTPUT
                             exit 1
                         fi 
                     else
@@ -105,7 +107,7 @@ jobs:
             - name: "🗒️ Summary"
               run: |
                 echo "## Results" >> $GITHUB_STEP_SUMMARY
-                echo "### Suite Call" >> $GITHUB_STEP_SUMMARY
+                echo "### Suite Call:" >> $GITHUB_STEP_SUMMARY
                 echo "**Status:** ${{ needs.trigger-suite.result }}" >> $GITHUB_STEP_SUMMARY
                 if [[ "${{needs.trigger-suite.result}}" == "failure" ]]; then
                 echo "❌ Failed to trigger Test Suite Run" >> $GITHUB_STEP_SUMMARY
@@ -113,12 +115,12 @@ jobs:
                 echo "  Verify suite id ${{inputs.suite}} is correct" >> $GITHUB_STEP_SUMMARY
                 fi
 
-                echo "### Execution Result" >> $GITHUB_STEP_SUMMARY
+                echo "### Execution Result:" >> $GITHUB_STEP_SUMMARY
                 echo "**Status** ${{ needs.check-suite-status.result }}" >> $GITHUB_STEP_SUMMARY
                 if [[ "${{ needs.check-suite-status.result }}" == "failure" ]]; then
                 echo "⚠️ One or more tests failed during execution" >> $GITHUB_STEP_SUMMARY
                 fi
-                if [[ ${{ needs.check-suite-status.outputs.timeout || 'false' }}  == "true" ]]; then
+                if [[ ${{ needs.check-suite-status.outputs.timeout }}  == "true" ]]; then
                 echo "⌛️ Test Suite Run did not finish under the set time interval ${{ inputs.retries }} * 5 minutes"
                 echo "Consider increasing the number of retries"
                 fi
